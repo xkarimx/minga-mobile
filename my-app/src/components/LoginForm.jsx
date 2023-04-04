@@ -1,122 +1,150 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, Image,KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useDispatch, useSelector } from 'react-redux';
+import bottomTabsActions from '../store/ReloadBottomsTabs/actions.js';  
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BienvenidaRegister from './Wellcome';
+import axios from 'axios';
 import google from "../../images/Googlee.png"
-import { Alert } from 'react-native';
 
-export default function FormRegister() {
-  const [name, setName] = useState('');     
-  const [mail, setmail] = useState('');     
-  const [photo, setPhoto] = useState('');     
+const { reloadBottomTabs } = bottomTabsActions
+
+export default function FormLogin() {
+  const navigation = useNavigation();
+  const [mail, setmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigation= useNavigation()
+  const dispatch = useDispatch()
+  let state = useSelector(store => store.bottomReducer.state)
   const [loading, setLoading] = useState()
 
   async function handleSubmit() {
     let data = {
-        name: name,
-        mail: mail,
-        photo: photo,
-        password: password
-    }
+      mail: mail,
+      password: password
+    };
     
-    let url = 'https://minga-grupoblanco.onrender.com/api/signup/'
+    let url = 'https://minga-grupoblanco.onrender.com/api/signin/';
+
     try {
       setLoading(true)
-        await axios.post(url, data)
-        console.log('creado')
-        setTimeout(() => {
+      const response = await axios.post(url, data);
+      const { token, user } = response.data;
+      
+     
+      await AsyncStorage.setItem('token', token);
+      const storedToken = await AsyncStorage.getItem('token');
+      console.log('Token almacenado:', storedToken);
+      
+
+      await AsyncStorage.setItem('user', JSON.stringify({
+        name: user.name,
+        mail: user.mail,
+        photo: user.photo,
+      }));
+      const storedUser = await AsyncStorage.getItem('user');
+      console.log('Usuario almacenado:', storedUser);
+      console.log('logueado');
+      dispatch(reloadBottomTabs({ state: !state }))
+      setTimeout(() => {
         setLoading(false);
-      }, 3000);
-      navigation.navigate("Home")
+      }, 1500);
       Alert.alert(
-        'Account created!',
-        'Your account has been created successfully.',
+        'User logged in!',
+      
       );
     } catch (error) {
-        console.log(error)
-        setLoading(false);
+      console.log(error);
+      Alert.alert(
+        'Wrong Credentials',
+      
+      );
+      setLoading(false);
     }
-}
-  
-
+  }
   return (
+    <KeyboardAwareScrollView>
     <View style={styles.container}>
-      <View style={styles.fieldset}>
-        <Text style={styles.legend}>Name</Text>
-        <View style={styles.legendCont}>
-          <TextInput style={styles.input} id="name" name="name" required onChangeText={(inputText => setName(inputText))} />
-          
-        </View>
-      </View>
+      <BienvenidaRegister text="Welcome!"/>
 
       <View style={styles.fieldset}>
         <Text style={styles.legend}>Email</Text>
         <View style={styles.legendCont}>
-          <TextInput style={styles.input} id="mail" name="mail" required onChangeText={(inputText => setmail(inputText))} />
-          
-        </View>
-      </View>
-
-      <View style={styles.fieldset}>
-        <Text style={styles.legend}>Photo</Text>
-        <View style={styles.legendCont}>
-          <TextInput style={styles.input} id="photo" name="photo" required onChangeText={(inputText => setPhoto(inputText))} />
-         
+          <TextInput
+            style={styles.input}
+            id="mail"
+            name="mail"
+            required
+            onChangeText={(inputText) => setmail(inputText)}
+          />
         </View>
       </View>
 
       <View style={styles.fieldset}>
         <Text style={styles.legend}>Password</Text>
         <View style={styles.legendCont}>
-          <TextInput style={styles.input} secureTextEntry={true} id="password" name="password" required onChangeText={(inputText => setPassword(inputText))} />
-          
+          <TextInput
+            style={styles.input}
+            secureTextEntry={true}
+            id="password"
+            name="password"
+            required
+            onChangeText={(inputText) => setPassword(inputText)}
+          />
         </View>
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Sign up</Text>
-
+        <Text style={styles.buttonText}>Sign in</Text>
+    
       </TouchableOpacity>
 
       <View style={styles.divGoogle}>
-        <TouchableOpacity style={styles.button2} onPress={() => {
+        <TouchableOpacity
+          style={styles.button2}
+          onPress={() => {
           
-          }}>
+          }}
+        >
           <Image style={styles.googleImg} source={google} />
-          <Text style={styles.buttonText2}>Sign up with Google</Text>
+          <Text style={styles.buttonText2}>Sign in with Google</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.parrafosForm}>
         <Text>
-          Already have an account?
-          <Text style={styles.parrafosFormText} onPress={() => {
-              navigation.navigate("Home");
-            }}> Log in</Text> 
+          You don't have an account yet?
+          <Text
+            style={styles.parrafosFormText}
+            onPress={() => {
+              navigation.navigate('register');
+            }}
+          >
+            {' '}
+            Sign up
+          </Text>
         </Text>
       </View>
     </View>
+    </KeyboardAwareScrollView>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    gap: 15,
-    marginTop: 30,
+    gap: 20,
+    // marginTop: 50,
     width: "100%",
-    height: '100%',
-   
   },
   fieldset: {
     display: "flex",
     alignItems: "flex-start",
-    width: 410,
+    marginTop: 30,
+       width: 410,
     height: 65,
     width: "90%",
     justifyContent: "flex-start",
@@ -179,6 +207,12 @@ const styles = StyleSheet.create({
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  inputTextKeyboard: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
   
   buttonText: {
