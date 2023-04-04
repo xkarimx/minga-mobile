@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
   
   buttonText: {
-    color: "white"
+    color: "#5297ac"
   },
 
   button2: {

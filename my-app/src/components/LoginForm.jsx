@@ -64,7 +64,6 @@ export default function FormLogin() {
     }
   }
   return (
-    <KeyboardAwareScrollView>
     <View style={styles.container}>
       <BienvenidaRegister text="Welcome!"/>
 
@@ -127,7 +126,6 @@ export default function FormLogin() {
         </Text>
       </View>
     </View>
-    </KeyboardAwareScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -216,7 +214,7 @@ const styles = StyleSheet.create({
   },
   
   buttonText: {
-    color: "white"
+    color: "#5297ac"
   },
 
   button2: {

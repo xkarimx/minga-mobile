@@ -9,6 +9,7 @@ import Perfil from "../screen/Profile";
 import { FontAwesome } from '@expo/vector-icons';
 import Details from "../screen/MangaDetails";
 import LogOut from '../screen/LogOut'
+import Mangas from '../screen/Mangas'
 
 const Tab = createBottomTabNavigator();
 
@@ -83,6 +84,17 @@ function BottomTabsNavigation() {
       />
       {token ? (
         <>
+          <Tab.Screen
+            name="Mangas"
+            component={Mangas}
+            options={{
+              headerShown: false,
+              tabBarLabel: 'Mangas',
+              tabBarIcon: ({ color }) => (
+                <FontAwesome name="book" size={24} color={color} />
+              ),
+            }}
+          />
           <Tab.Screen name="Perfil" options={{
             headerShown: false,
             tabBarLabel: 'Profile',

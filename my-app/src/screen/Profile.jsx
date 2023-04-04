@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import bg from '../../images/bg1.jpg';
+import bg from '../../images/bg25.png';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'white',
   },
   userText: {
     fontSize: 16,

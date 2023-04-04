@@ -32,6 +32,6 @@ const reducer = createReducer(
                 return newState
             }
         ) 
-     
+
 )
-export default reducer  
+export default reducer

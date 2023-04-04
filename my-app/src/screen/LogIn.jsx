@@ -8,6 +8,7 @@ export default function LogIn() {
   return (
     <ImageBackground source={bg} style={styles.background}>
       <ScrollView contentContainerStyle={styles.container}>
+        
         <Wellcome text="Welcome!" />
         <LoginForm />
       </ScrollView>
